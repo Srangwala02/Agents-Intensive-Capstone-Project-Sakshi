@@ -1,31 +1,52 @@
-**IntelliGuide**
-An AI-powered tutoring agent that provides personalized, real-time learning support tailored to each student’s needs
+# IntelliGuide
 
-**Problem Statement** 
-Software engineering students often struggle to get timely, personalized help with course concepts, exam preparation, and practice questions, especially when teachers and peers are not immediately available. Traditional resources like static notes or generic question banks do not adapt to each student’s specific doubts or weak areas, which can leave gaps in understanding before exams. This project aims to provide each student with an on-demand, interactive assistant that can resolve conceptual doubts, generate practice quizzes, and evaluate performance in a targeted way across operating systems, computer networks, and databases subjects. ​
+## Overview
+IntelliGuide is an AI-powered tutoring agent designed to provide personalized, real-time learning support tailored to software engineering students. It addresses the challenge students face in obtaining timely, customized help for course concepts, exam preparation, and practice questions when teachers or peers are unavailable. Unlike static resources, IntelliGuide adapts to individual doubts and weak areas, ensuring comprehensive understanding across key subjects like operating systems, computer networks, and databases.
 
-**Why agents?** 
-Multi-agent systems are well-suited for this problem because they allow specialized agents to focus on distinct tasks like doubt resolution, quiz generation, evaluation, and domain-specific reasoning while collaborating towards a shared educational goal. This specialization improves quality and reliability, as a networking expert agent or OS expert agent can reason more deeply about its own domain than a single monolithic agent trying to cover everything. The orchestrating agent can coordinate these specialists, choose the right workflow (doubt support versus assessment), and route subtasks to the correct expert, which aligns with recommended multi-agent patterns in education such as planner–solver–evaluator workflows.​
+## Motivation
+Software engineering students often struggle with:
+- Getting immediate, tailored help with complex topics.
+- Using generic resources that do not adapt to their unique learning needs.
+- Filling knowledge gaps before exams due to lack of personalized guidance.
 
-**What you created**
-The system is a multi-agent tutoring and assessment platform for software engineering students, centered around a root (orchestrator) agent that manages the overall workflow. Students interact with the root agent, which decides whether to route the request to a doubt resolver agent, a quiz generation agent, or a quiz evaluator agent. The doubt resolver and quiz generation agents can in turn call domain experts—the database expert agent, OS expert agent, and networking expert agent—to gain domain-specific knowledge.​
+IntelliGuide resolves these issues by offering an interactive assistant that answers conceptual doubts, generates practice quizzes, and evaluates student performance in a focused manner.
 
-Internally, the quiz generation agent persists quizzes in MongoDB and associates each quiz with an ID that is stored in the user’s session. The quiz evaluator agent uses this quiz ID from the session to retrieve the correct answers from MongoDB, compare them with the student’s responses, and compute detailed results. Logging and observability are built in so that interactions, agent decisions, and tool calls can be monitored and debugged, which follows best practice guidance for multi-agent educational systems.​
+## Why Multi-agent Architecture?
+Multi-agent systems fit this educational problem because:
+- They enable specialized agents to focus on specific tasks such as doubt resolution, quiz generation, evaluation, and domain-specific reasoning.
+- Domain expert agents (Database, OS, Networking) provide deep, accurate knowledge in their subject areas.
+- A root orchestrator agent coordinates workflows, routing requests efficiently to the relevant specialists.
+- This division improves the quality and reliability of tutoring compared to a monolithic AI solution.
 
-**Demo**
-In a typical demo, a student starts by asking a conceptual question, such as a doubt in operating systems or computer networks, through a single chat interface. The root agent recognizes this as a doubt-resolution workflow and delegates to the doubt resolver agent, which may further consult the OS expert or networking expert agent to generate a clear, step-by-step explanation tailored to the student’s level.​
+The architecture supports a planner–solver–evaluator workflow pattern recommended for educational multi-agent systems.
 
-The same student can then request a practice quiz on topics like database indexing or the OSI model. The root agent hands this off to the quiz generation agent, which uses the relevant domain experts to generate a topic-focused quiz, stores it in MongoDB, and returns the questions while saving a quiz ID in the student’s session. After the student submits answers, the quiz evaluator agent retrieves the stored quiz by ID, compares each answer, and returns a detailed score and feedback, completing an end-to-end, personalized learning loop.​
+## System Components
+- **Root/Orchestrator Agent:** Manages overall workflow, directing requests to doubt resolver, quiz generator, or evaluator agents.
+- **Doubt Resolver Agent:** Handles conceptual questions, consulting domain experts to provide step-by-step explanations tailored to student levels.
+- **Quiz Generation Agent:** Creates quizzes based on requested topics, calls domain experts for question content, and stores quizzes in MongoDB, associating quiz IDs with user sessions.
+- **Quiz Evaluator Agent:** Retrieves stored quiz answers from MongoDB using session quiz IDs, compares student answers, and generates detailed feedback and scores.
+- **Domain Expert Agents:** Specialized in Operating Systems, Computer Networks, and Databases, providing deep subject-matter expertise.
+- **MongoDB:** Used for quiz persistence and metadata storage.
+- **Session Management:** Tracks active quiz IDs and student context across multiple interactions.
+- **External Search Tool:** Built-in real-time web search integration for up-to-date reference information beyond internal agent knowledge.
+- **Logging and Observability:** Captures interactions, agent decisions, tool calls, database operations, and evaluation results for monitoring, debugging, and improvement.
 
-**The Build**
-The system is built as a multi-agent architecture where each agent is implemented as a specialized service or component with a clear role, following standard definitions of multi-agent systems. The root/orchestrator agent implements the coordination logic, routing each user request into appropriate workflows and managing interactions between the doubt resolver, quiz generator, quiz evaluator, and the domain experts. MongoDB is used as a custom tool for data persistence, storing quiz definitions, correct answers, and related metadata, while session management keeps track of the active quiz ID and user context across multiple interactions.​
+## Demo Workflow
+1. A student asks a conceptual question via the chat interface.
+2. The root agent recognizes it as a doubt and delegates the query to the doubt resolver.
+3. The doubt resolver consults the relevant domain expert to generate a clear, tailored explanation.
+4. The student requests a quiz on a specific topic.
+5. The root agent routes this to the quiz generation agent, which creates the quiz using domain experts, saves it in MongoDB, and returns questions along with a quiz ID.
+6. After submission, the quiz evaluator agent fetches the quiz by ID, compares answers, and delivers a detailed score and feedback, closing the personalized learning loop.
 
-The system also integrates a built-in external search capability (such as web search) as a tool that agents can invoke when they need up-to-date or reference information beyond their internal reasoning. Logging and observability capture each step of the workflow—agent choices, tool invocations, database operations, and evaluation results—so that system behavior can be analyzed, improved, and debugged, which is a recognized need in complex agentic systems.​
+## Future Enhancements
+With additional time, the system would be enhanced by:
+- A **Guidance Agent** providing longitudinal, personalized coaching based on quiz history, doubt patterns, and interaction data.
+- Rich analytics dashboards for teachers and mentors to monitor real-time progress, common misconceptions, and risk indicators.
+- Adaptive difficulty tuning to adjust question complexity and hints dynamically, supporting learners at different proficiency levels.
+- Expansion to multi-domain support by swapping domain experts, enabling use in subjects like mathematics, science, or language learning.
+- Alignment with curricula or exam boards for targeted learning plans and enriched teacher/parent engagement.
 
-**If I had more time, this is what I’d do**
-With more time, a dedicated guidance agent would be added to provide longitudinal, personalized coaching based on each learner’s quiz history, doubt patterns, and interaction traces. This agent would continuously analyze performance across domains (operating systems, networking, databases, etc.), highlight weak topics such as OSI layers or process scheduling, and then proactively recommend targeted practice questions, concise explanations, and follow-up quizzes to close those gaps.​
+---
 
-Beyond individual feedback, the system could expose richer analytics dashboards for teachers and mentors, showing real-time progress, common misconceptions, and risk indicators at class and individual levels to support differentiated instruction. Adaptive difficulty tuning could automatically adjust question complexity and hinting based on how students are performing, so that stronger learners are challenged while struggling learners receive more scaffolding and step-by-step guidance.​
-
-This architecture can also be generalized beyond software engineering to support school students and learners in other domains such as mathematics, science, or language learning by swapping in domain-specific expert agents and content models. In these settings, the guidance agent could track concept mastery against age-appropriate curricula or exam boards, recommend remedial or enrichment material, and help teachers or parents understand where a student needs support. Over time, the platform could evolve into a multi-domain, multi-level intelligent tutoring system that aligns closely with curriculum standards while remaining flexible enough to adapt to different institutions and subjects.
-
+IntelliGuide exemplifies how multi-agent AI tutoring systems can create deeply personalized, scalable educational experiences that improve student outcomes through modular expertise and orchestrated workflows.
